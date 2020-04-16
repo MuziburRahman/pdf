@@ -23,7 +23,7 @@ namespace IxMilia.Pdf
 
         internal void WriteTo(Stream stream)
         {
-            stream.WriteLine($"{Id} 0 obj");
+            stream.WriteLine($"{Id.ToString()} 0 obj");
             stream.WriteBytes(GetContent());
             stream.WriteLine("endobj");
         }

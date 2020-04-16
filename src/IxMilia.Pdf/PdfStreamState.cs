@@ -6,11 +6,11 @@
         public PdfColor StrokeColor { get; set; }
         public PdfMeasurement StrokeWidth { get; set; }
 
-        public PdfStreamState(PdfColor? nonStrokeColor = null, PdfColor? strokeColor = null, PdfMeasurement? strokeWidth = null)
+        public PdfStreamState(PdfColor nonStrokeColor = default, PdfColor strokeColor = default, PdfMeasurement strokeWidth = default)
         {
-            NonStrokeColor = nonStrokeColor ?? default(PdfColor);
-            StrokeColor = strokeColor ?? default(PdfColor);
-            StrokeWidth = strokeWidth ?? default(PdfMeasurement);
+            NonStrokeColor = nonStrokeColor;
+            StrokeColor = strokeColor;
+            StrokeWidth = strokeWidth;
         }
     }
 }

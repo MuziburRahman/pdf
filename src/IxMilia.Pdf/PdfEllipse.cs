@@ -1,21 +1,24 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
+using System.Numerics;
+using IxMilia.Pdf.Extensions;
 
 namespace IxMilia.Pdf
 {
     public class PdfEllipse : IPdfPathItem
     {
-        public PdfPoint Center { get; set; }
-        public virtual PdfMeasurement RadiusX { get; set; }
-        public virtual PdfMeasurement RadiusY { get; set; }
-        public double RotationAngle { get; set; }
-        public double StartAngle { get; set; }
-        public double EndAngle { get; set; }
+        public Vector2 Center { get; set; }
+        public virtual float RadiusX { get; set; }
+        public virtual float RadiusY { get; set; }
+        public float RotationAngle { get; set; }
+        public float StartAngle { get; set; }
+        public float EndAngle { get; set; }
         public PdfStreamState State { get; set; }
 
         private double EndAngleNormalized => EndAngle > StartAngle ? EndAngle : EndAngle + Math.PI * 2.0;
 
-        public PdfEllipse(PdfPoint center, PdfMeasurement radiusX, PdfMeasurement radiusY, double rotationAngle = 0.0, double startAngle = 0.0, double endAngle = Math.PI * 2.0, PdfStreamState state = default(PdfStreamState))
+        public PdfEllipse(Vector2 center, float radiusX, float radiusY, float rotationAngle = 0, float startAngle = 0, float endAngle = MathPlus.PI * 2, PdfStreamState state = default(PdfStreamState))
         {
             Center = center;
             RadiusX = radiusX;
@@ -27,12 +30,12 @@ namespace IxMilia.Pdf
 
             while (StartAngle < 0.0)
             {
-                StartAngle += Math.PI * 2.0;
+                StartAngle += MathPlus.PI * 2;
             }
 
             while (EndAngle < 0.0)
             {
-                EndAngle += Math.PI * 2.0;
+                EndAngle += MathPlus.PI * 2;
             }
         }
 
@@ -129,41 +132,41 @@ namespace IxMilia.Pdf
             }
 
             // from http://www.tinaja.com/glib/bezcirc2.pdf
-            var x0 = Math.Cos(theta * 0.5);
-            var y0 = -Math.Sin(theta * 0.5);
+            var x0 = (float)Math.Cos(theta * 0.5);
+            var y0 = -(float)Math.Sin(theta * 0.5);
 
             var x3 = x0;
             var y3 = -y0;
 
-            var x1 = (4.0 - x0) / 3.0;
-            var y1 = ((1.0 - x0) * (3.0 - x0)) / (3.0 * y0);
+            var x1 = (4 - x0) / 3;
+            var y1 = (1 - x0) * (3 - x0) / (3 * y0);
 
             var x2 = x1;
             var y2 = -y1;
 
-            var p0 = new PdfPoint(PdfMeasurement.Points(x0), PdfMeasurement.Points(y0));
-            var p1 = new PdfPoint(PdfMeasurement.Points(x1), PdfMeasurement.Points(y1));
-            var p2 = new PdfPoint(PdfMeasurement.Points(x2), PdfMeasurement.Points(y2));
-            var p3 = new PdfPoint(PdfMeasurement.Points(x3), PdfMeasurement.Points(y3));
+            var p0 = new Vector2(x0, y0);
+            var p1 = new Vector2(x1, y1);
+            var p2 = new Vector2(x2, y2);
+            var p3 = new Vector2(x3, y3);
 
             // now rotate points by (theta / 2) + startAngle
-            var rotTheta = theta * 0.5 + startAngle;
-            p0 = p0.RotateAboutOrigin(rotTheta);
-            p1 = p1.RotateAboutOrigin(rotTheta);
-            p2 = p2.RotateAboutOrigin(rotTheta);
-            p3 = p3.RotateAboutOrigin(rotTheta);
+            var rotTheta = (float)theta * 0.5f + (float)startAngle;
+            p0 = p0.RotateCWAboutOriginR(rotTheta);
+            p1 = p1.RotateCWAboutOriginR(rotTheta);
+            p2 = p2.RotateCWAboutOriginR(rotTheta);
+            p3 = p3.RotateCWAboutOriginR(rotTheta);
 
             // multiply by the radius
-            p0 = new PdfPoint(p0.X * RadiusX, p0.Y * RadiusY);
-            p1 = new PdfPoint(p1.X * RadiusX, p1.Y * RadiusY);
-            p2 = new PdfPoint(p2.X * RadiusX, p2.Y * RadiusY);
-            p3 = new PdfPoint(p3.X * RadiusX, p3.Y * RadiusY);
+            p0 = new Vector2(p0.X * RadiusX, p0.Y * RadiusY);
+            p1 = new Vector2(p1.X * RadiusX, p1.Y * RadiusY);
+            p2 = new Vector2(p2.X * RadiusX, p2.Y * RadiusY);
+            p3 = new Vector2(p3.X * RadiusX, p3.Y * RadiusY);
 
             // do final rotation
-            p0 = p0.RotateAboutOrigin(RotationAngle);
-            p1 = p1.RotateAboutOrigin(RotationAngle);
-            p2 = p2.RotateAboutOrigin(RotationAngle);
-            p3 = p3.RotateAboutOrigin(RotationAngle);
+            p0 = p0.RotateCWAboutOriginR(RotationAngle);
+            p1 = p1.RotateCWAboutOriginR(RotationAngle);
+            p2 = p2.RotateCWAboutOriginR(RotationAngle);
+            p3 = p3.RotateCWAboutOriginR(RotationAngle);
 
             // offset for the center
             p0 += Center;

@@ -1,17 +1,20 @@
-﻿namespace IxMilia.Pdf
+﻿using System.Numerics;
+using IxMilia.Pdf.Extensions;
+
+namespace IxMilia.Pdf
 {
     public class PdfPathMoveTo : PdfPathCommand
     {
-        public PdfPoint Point { get; set; }
+        public Vector2 Point { get; set; }
 
-        public PdfPathMoveTo(PdfPoint point)
+        public PdfPathMoveTo(Vector2 point)
         {
             Point = point;
         }
 
         internal override void Write(PdfStreamWriter writer)
         {
-            writer.WriteLine($"{Point} m");
+            writer.WriteLine($"{Point.ToPdfString()} m");
         }
     }
 }

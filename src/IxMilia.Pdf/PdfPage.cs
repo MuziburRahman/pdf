@@ -8,16 +8,34 @@ namespace IxMilia.Pdf
 {
     public class PdfPage : PdfObject
     {
-        public const double LetterWidth = 8.5;
-        public const double LetterHeight = 11.0;
+        /// <summary>
+        /// in inch
+        /// </summary>
+        public const float LetterWidth = 8.5f;
+
+        /// <summary>
+        /// in inch
+        /// </summary>
+        public const float LetterHeight = 11f;
 
         internal PdfStream Stream { get; }
 
-        public PdfMeasurement Width { get; set; }
-        public PdfMeasurement Height { get; set; }
+        /// <summary>
+        /// in points
+        /// </summary>
+        public float Width { get; set; }
+
+
+        /// <summary>
+        /// in points
+        /// </summary>
+        public float Height { get; set; }
         public IList<PdfStreamItem> Items => Stream.Items;
 
-        public PdfPage(PdfMeasurement width, PdfMeasurement height, params IPdfEncoder[] encoders)
+        /// <param name="width">in point</param>
+        /// <param name="height">in point</param>
+        /// <param name="encoders"></param>
+        public PdfPage(float width, float height, params IPdfEncoder[] encoders)
         {
             Width = width;
             Height = height;
@@ -26,18 +44,18 @@ namespace IxMilia.Pdf
 
         public static PdfPage NewLetter()
         {
-            return new PdfPage(PdfMeasurement.Inches(LetterWidth), PdfMeasurement.Inches(LetterHeight));
+            return new PdfPage(LetterWidth.InchToPoint(), LetterHeight.InchToPoint());
         }
 
         public static PdfPage NewLetterLandscape()
         {
-            return new PdfPage(PdfMeasurement.Inches(LetterHeight), PdfMeasurement.Inches(LetterWidth));
+            return new PdfPage(LetterHeight.InchToPoint(), LetterWidth.InchToPoint());
         }
 
         public static PdfPage NewASeries(int n, bool isPortrait = true)
         {
-            var longSide = (int)(1000.0 / Math.Pow(2.0, (2.0 * n - 1.0) / 4.0) + 0.2);
-            var shortSide = (int)(longSide / Math.Sqrt(2.0));
+            float longSide = (int)(1000.0 / Math.Pow(2.0, (2.0 * n - 1.0) / 4.0) + 0.2);
+            float shortSide = (int)(longSide / Math.Sqrt(2.0));
             switch (n)
             {
                 case 0:
@@ -50,7 +68,7 @@ namespace IxMilia.Pdf
 
             var width = isPortrait ? shortSide : longSide;
             var height = isPortrait ? longSide : shortSide;
-            return new PdfPage(PdfMeasurement.Mm(width), PdfMeasurement.Mm(height));
+            return new PdfPage(width.MmToPoint(), height.MmToPoint());
         }
 
         public override IEnumerable<PdfObject> GetChildren()
@@ -74,7 +92,7 @@ namespace IxMilia.Pdf
                 }
             }
 
-            return $"<</Type /Page /Parent {Parent.Id.AsObjectReference()} /Contents {Stream.Id.AsObjectReference()} /MediaBox [0 0 {Width.AsPoints().AsFixed()} {Height.AsPoints().AsFixed()}] /Resources <<{string.Join(" ", resources)}>>>>".GetNewLineBytes();
+            return $"<</Type /Page /Parent {Parent.Id.AsObjectReference()} /Contents {Stream.Id.AsObjectReference()} /MediaBox [0 0 {Width.AsFixed()} {Height.AsFixed()}] /Resources <<{string.Join(" ", resources)}>>>>".GetNewLineBytes();
         }
 
         private IEnumerable<PdfFont> GetAllFonts()

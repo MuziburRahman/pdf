@@ -1,8 +1,11 @@
+
+using System.Numerics;
+
 namespace IxMilia.Pdf
 {
     public class PdfArc : PdfEllipse
     {
-        public PdfArc(PdfPoint center, PdfMeasurement radius, double startAngle, double endAngle, PdfStreamState state = default(PdfStreamState))
+        public PdfArc(Vector2 center, float radius, float startAngle, float endAngle, PdfStreamState state = default)
             : base(center, radius, radius, startAngle: startAngle, endAngle: endAngle, state: state)
         {
         }

@@ -9,8 +9,8 @@ namespace IxMilia.Pdf
         private static readonly byte _binaryCharacter = (byte)'\u00E6';
         private static readonly byte[] _binaryMarker = new byte[] { (byte)'%', _binaryCharacter, _binaryCharacter, _binaryCharacter, _binaryCharacter, (byte)'\r', (byte)'\n' };
 
-        private PdfCatalog _catalog = new PdfCatalog();
-        private List<int> _offsets = new List<int>();
+        private readonly PdfCatalog _catalog = new PdfCatalog();
+        private readonly List<int> _offsets = new List<int>();
 
         public IList<PdfPage> Pages => _catalog.Pages.Pages;
         public IList<PdfFont> Fonts => _catalog.Fonts;

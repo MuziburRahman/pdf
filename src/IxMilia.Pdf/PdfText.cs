@@ -1,4 +1,5 @@
 using IxMilia.Pdf.Extensions;
+using System.Numerics;
 
 namespace IxMilia.Pdf
 {
@@ -6,13 +7,22 @@ namespace IxMilia.Pdf
     {
         public string Value { get; set; }
         public PdfFont Font { get; set; }
-        public PdfMeasurement FontSize { get; set; }
-        public PdfPoint Location { get; set; }
+
+        /// <summary>
+        /// in point
+        /// </summary>
+        public float FontSize { get; set; }
+        public Vector2 Location { get; set; }
 
         public PdfStreamState State { get; set; }
-        public PdfMeasurement CharacterWidth { get; set; }
 
-        public PdfText(string value, PdfFont font, PdfMeasurement fontSize, PdfPoint location, PdfStreamState state = default(PdfStreamState))
+
+        /// <summary>
+        /// in point
+        /// </summary>
+        public float CharacterWidth { get; set; }
+
+        public PdfText(string value, PdfFont font, float fontSize, Vector2 location, PdfStreamState state = default)
         {
             Value = value;
             Font = font;
@@ -25,11 +35,11 @@ namespace IxMilia.Pdf
         {
             writer.SetState(State);
             writer.WriteLine("BT");
-            writer.WriteLine($"    /F{Font.FontId} {FontSize.AsPoints().AsFixed()} Tf");
-            writer.WriteLine($"    {Location} Td");
-            if (CharacterWidth.RawValue != 0.0)
+            writer.WriteLine($"    /F{Font.FontId} {FontSize.AsFixed()} Tf");
+            writer.WriteLine($"    {Location.ToPdfString()} Td");
+            if (CharacterWidth != 0f)
             {
-                writer.WriteLine($"    {CharacterWidth.AsPoints().AsFixed()} Tc");
+                writer.WriteLine($"    {CharacterWidth.AsFixed()} Tc");
             }
 
             writer.Write("    [(");
