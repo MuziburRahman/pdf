@@ -6,14 +6,15 @@ namespace IxMilia.Pdf
     internal class PdfStreamWriter
     {
         private List<byte> _bytes = new List<byte>();
-        private PdfStreamState _lastState = default(PdfStreamState);
+        private PdfStreamState _lastState = PdfStreamState.DefaultState;
 
         public PdfStreamWriter()
         {
             // set initial state
             WriteStrokeWidth(_lastState.StrokeWidth);
             WriteStrokeColor(_lastState.StrokeColor);
-            WriteNonStrokeColor(_lastState.NonStrokeColor);
+            if (_lastState.StrokeDashArray != null && _lastState.StrokeDashArray.Length > 0)
+                WriteStrokeDash(_lastState.StrokeDashArray);
         }
 
         public void Write(byte b)
@@ -34,9 +35,16 @@ namespace IxMilia.Pdf
 
         public void SetState(PdfStreamState state)
         {
-            if (state.StrokeColor != _lastState.StrokeColor || state.StrokeWidth != _lastState.StrokeWidth)
+            if (state is null)
+                state = PdfStreamState.DefaultState;
+
+            if (state != _lastState)
             {
-                Stroke();
+                WriteLine("S");
+            }
+            else
+            {
+                return;
             }
 
             if (state.StrokeWidth != _lastState.StrokeWidth)
@@ -48,11 +56,14 @@ namespace IxMilia.Pdf
             {
                 WriteStrokeColor(state.StrokeColor);
             }
-
-            if (state.NonStrokeColor != _lastState.NonStrokeColor)
+            if (!state.StrokeDashArrayEqual(_lastState))
             {
-                WriteNonStrokeColor(state.NonStrokeColor);
+                WriteStrokeDash(state.StrokeDashArray);
             }
+            //if (state.NonStrokeColor != _lastState.NonStrokeColor)
+            //{
+            //    WriteNonStrokeColor(state.NonStrokeColor);
+            //}
 
             _lastState = state;
         }
@@ -65,6 +76,12 @@ namespace IxMilia.Pdf
         private void WriteStrokeColor(PdfColor color)
         {
             WriteLine($"{color} RG");
+        }
+        
+        private void WriteStrokeDash(int[] dash)
+        {
+            string s = string.Join(" ", dash);
+            WriteLine("[" + s + "] 0 d");
         }
 
         private void WriteNonStrokeColor(PdfColor color)

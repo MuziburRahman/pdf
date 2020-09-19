@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright 2018")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("A portable .NET library for creating simple PDF documents.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1843d904f2af06ad90daa3fef2b14c80ee87aa1d")]
 [assembly: System.Reflection.AssemblyProductAttribute("IxMilia.Pdf")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IxMilia.Pdf")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

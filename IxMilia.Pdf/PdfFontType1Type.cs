@@ -17,7 +17,8 @@ namespace IxMilia.Pdf
         CourierOblique,
         TimesBoldItalic,
         HelveticaBoldOblique,
-        CourierBoldOblique
+        CourierBoldOblique,
+        Consolas
     }
 
     internal static class PdfFontType1TypeExtensions
@@ -54,6 +55,8 @@ namespace IxMilia.Pdf
                     return "Helvetica-BoldOblique";
                 case PdfFontType1Type.CourierBoldOblique:
                     return "Courier-BoldOblique";
+                case PdfFontType1Type.Consolas:
+                    return "Consolas";
                 default:
                     throw new ArgumentException(nameof(fontType));
             }

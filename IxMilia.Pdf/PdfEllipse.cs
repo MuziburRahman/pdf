@@ -42,6 +42,7 @@ namespace IxMilia.Pdf
         public IEnumerable<PdfPathCommand> GetCommands()
         {
             yield return new PdfSetState(State);
+
             foreach (var command in GetArcCommands(1))
             {
                 yield return command;
@@ -105,6 +106,7 @@ namespace IxMilia.Pdf
                         }
                     }
                 }
+
                 else if (includesStart)
                 {
                     // only includes start angle
